@@ -274,6 +274,45 @@
   .tools-grid dt { color: var(--accent-deep); font-weight: 600; }
   .tools-grid dd { margin: 0; color: var(--ink); }
 
+
+  /* ---------- CONTACT COMPOSER ---------- */
+  .contact-lede { margin: 0 0 18px; color: var(--ink); }
+  .topics { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; border: 0; }
+  .topics legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .topic {
+    font: inherit; font-size: 0.88rem; font-weight: 500;
+    padding: 8px 14px; border-radius: 999px;
+    border: 1px solid var(--rule); background: #fff; color: var(--ink);
+    cursor: pointer; transition: background .15s, border-color .15s, color .15s;
+  }
+  .topic:hover { border-color: var(--accent); }
+  .topic[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-deep); font-weight: 600; }
+  .topic:focus-visible, .c-btn:focus-visible, .composer input:focus-visible, .composer textarea:focus-visible {
+    outline: 2px solid var(--accent-deep); outline-offset: 2px;
+  }
+  .composer[hidden] { display: none; }
+  .composer { border: 1px solid var(--rule); border-radius: 14px; padding: 18px; background: #fff; }
+  .composer label { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sub); margin: 0 0 6px; }
+  .composer input, .composer textarea {
+    width: 100%; font: inherit; font-size: 0.95rem; color: var(--ink);
+    border: 1px solid var(--rule); border-radius: 10px; padding: 10px 12px; background: var(--bg);
+  }
+  .composer textarea { min-height: 130px; resize: vertical; }
+  .c-row { margin: 0 0 14px; }
+  .c-subject { font-size: 0.85rem; color: var(--sub); margin: 0 0 14px; }
+  .c-subject strong { color: var(--ink); font-weight: 600; }
+  .c-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .c-btn {
+    font: inherit; font-size: 0.86rem; font-weight: 600; text-decoration: none; cursor: pointer;
+    padding: 9px 16px; border-radius: 999px; border: 1px solid var(--accent-deep);
+    background: #fff; color: var(--accent-deep); display: inline-block; line-height: 1.3;
+  }
+  .c-btn:hover { background: var(--accent-soft); }
+  .c-btn.primary { background: var(--accent-deep); color: #fff; }
+  .c-btn.primary:hover { opacity: .88; background: var(--accent-deep); }
+  .c-note { font-size: 0.8rem; color: var(--sub); margin: 14px 0 0; }
+  .c-status { font-size: 0.82rem; color: var(--accent-deep); min-height: 1.3em; margin: 8px 0 0; }
+
   footer {
     max-width: 640px;
     margin: 0 auto;
@@ -324,6 +363,7 @@
         <li><a href="#teaching">Teaching</a></li>
         <li><a href="#education">Education</a></li>
         <li><a href="#publications">Publications</a></li>
+        <li><a href="#contact">Contact</a></li>
       </ul>
       <a class="cv-download" href="Winn-Ge-CV.pdf" target="_blank" rel="noopener" aria-label="Download CV (PDF)">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -342,6 +382,8 @@
         <a href="mailto:winn_g@outlook.com">winn_g@outlook.com</a>
         <span class="sep">·</span>
         <a href="https://orcid.org/0009-0004-3830-9481" target="_blank" rel="noopener">ORCID 0009-0004-3830-9481</a>
+        <span class="sep">·</span>
+        <a href="#contact">Message me</a>
       </p>
     </div>
   </div>
@@ -360,7 +402,7 @@
       <h2>Research focus</h2>
       <div class="item">
         <div class="item-title">Creativity in music education</div>
-        <p>My PhD produced an original framework and model of creativity in music education. It draws on Csikszentmihalyi's systems model, among other theories. In that model, creativity happens between three parts: the Individual who makes something new, the Domain of existing knowledge, and the Field of people who judge it. The Field acts as a gatekeeper, deciding which new ideas get passed on. My model explains how teachers handle the three creativity dimensions set by the curriculum: sound exploration, improvisation and composition. A related peer-reviewed article is forthcoming in <em>Music Education Research</em>.</p>
+        <p>My PhD asked how music teachers in China think about creativity, and what shapes their views. It draws on Csikszentmihalyi's systems model, among other theories. In that model, creativity happens between three parts: the Individual who makes something new, the Domain of existing knowledge, and the Field of people who judge it. The Field acts as a gatekeeper, deciding which new ideas get passed on. I used the model to look at how exams, the curriculum and teachers' own training shape their views, and the study produced an original seven-phase spectrum of music teaching and learning. China's curriculum standards name three areas of creative work: exploring sound, improvisation and composition. A related peer-reviewed article is forthcoming in <em>Music Education Research</em>.</p>
       </div>
 
       <p class="sub-label">A project of our own</p>
@@ -440,6 +482,39 @@
       <p style="margin-top:20px; font-size:0.9rem; color:var(--sub);">Reviewer, <em>Learning Environments Research</em> (Springer Nature).</p>
     </section>
 
+    <section class="block" id="contact">
+      <h2>Get in touch</h2>
+      <p class="contact-lede">Email is the quickest way to reach me. Pick what it is about and I'll set up the message.</p>
+      <fieldset class="topics" id="topics">
+        <legend>What is your message about?</legend>
+        <button type="button" class="topic" data-topic="research" aria-pressed="false">Research or collaboration</button>
+        <button type="button" class="topic" data-topic="mentoring" aria-pressed="false">Mentoring or hosting</button>
+        <button type="button" class="topic" data-topic="teaching" aria-pressed="false">Teaching or workshops</button>
+        <button type="button" class="topic" data-topic="other" aria-pressed="false">Something else</button>
+      </fieldset>
+
+      <div class="composer" id="composer" hidden>
+        <p class="c-subject">Subject: <strong id="c-subject"></strong></p>
+        <div class="c-row">
+          <label for="c-name">Your name</label>
+          <input id="c-name" type="text" autocomplete="name" placeholder="How should I address you?">
+        </div>
+        <div class="c-row">
+          <label for="c-msg">Message</label>
+          <textarea id="c-msg" placeholder=""></textarea>
+        </div>
+        <div class="c-actions">
+          <a class="c-btn primary" id="c-mailto" href="mailto:winn_g@outlook.com">Open in my email app</a>
+          <a class="c-btn" id="c-gmail" href="https://mail.google.com" target="_blank" rel="noopener">Gmail</a>
+          <a class="c-btn" id="c-outlook" href="https://outlook.live.com" target="_blank" rel="noopener">Outlook</a>
+          <button type="button" class="c-btn" id="c-copy">Copy message</button>
+        </div>
+        <p class="c-status" id="c-status" role="status" aria-live="polite"></p>
+        <p class="c-note">Nothing is sent to this site. The message opens in your own email, so you can change it before you send. Mandarin or English both work.</p>
+      </div>
+      <noscript><p class="c-note">Please write to me directly: <a href="mailto:winn_g@outlook.com">winn_g@outlook.com</a></p></noscript>
+    </section>
+
   </main>
 
   <footer>
@@ -448,6 +523,66 @@
   </footer>
 
   </div>
+
+<script>
+(function () {
+  var TO = "winn_g@outlook.com";
+  var TOPICS = {
+    research:  { subject: "Research or collaboration", hint: "What are you working on, and how could we work together?" },
+    mentoring: { subject: "Mentoring or hosting enquiry", hint: "Which scheme or institution, and what do you have in mind?" },
+    teaching:  { subject: "Teaching or workshop enquiry", hint: "Who is the audience, and what would you like covered?" },
+    other:     { subject: "Hello from your website", hint: "What is on your mind?" }
+  };
+  var current = null;
+  var $ = function (id) { return document.getElementById(id); };
+  var buttons = document.querySelectorAll(".topic");
+  var composer = $("composer"), msg = $("c-msg"), nameEl = $("c-name"), status = $("c-status");
+
+  function body() {
+    var text = "Hi Winn,\n\n" + msg.value.trim();
+    var n = nameEl.value.trim();
+    if (n) text += "\n\n" + n;
+    return text;
+  }
+  function refresh() {
+    if (!current) return;
+    var t = TOPICS[current], b = body(), s = t.subject;
+    var q = "subject=" + encodeURIComponent(s) + "&body=" + encodeURIComponent(b);
+    $("c-mailto").href  = "mailto:" + TO + "?" + q;
+    $("c-gmail").href   = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(TO) + "&su=" + encodeURIComponent(s) + "&body=" + encodeURIComponent(b);
+    $("c-outlook").href = "https://outlook.live.com/mail/0/deeplink/compose?to=" + encodeURIComponent(TO) + "&subject=" + encodeURIComponent(s) + "&body=" + encodeURIComponent(b);
+  }
+  function choose(key) {
+    current = key;
+    buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.topic === key)); });
+    $("c-subject").textContent = TOPICS[key].subject;
+    msg.placeholder = TOPICS[key].hint;
+    composer.hidden = false;
+    status.textContent = "";
+    refresh();
+  }
+  buttons.forEach(function (b) { b.addEventListener("click", function () { choose(b.dataset.topic); if (!msg.value) msg.focus({ preventScroll: true }); }); });
+  msg.addEventListener("input", refresh);
+  nameEl.addEventListener("input", refresh);
+
+  $("c-copy").addEventListener("click", function () {
+    var text = "To: " + TO + "\nSubject: " + TOPICS[current].subject + "\n\n" + body();
+    function done(ok) { status.textContent = ok ? "Copied. Paste it into any email app or chat." : "Could not copy. Select the text in the box and copy it by hand."; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta); done(ok);
+    }
+  });
+  ["c-mailto", "c-gmail", "c-outlook"].forEach(function (id) {
+    $(id).addEventListener("click", function () { status.textContent = "Opening your email. You can edit the message before sending."; });
+  });
+  if (location.hash === "#contact") { var p = new URLSearchParams(location.search).get("topic"); if (p && TOPICS[p]) choose(p); }
+})();
+</script>
 
 </body>
 </html>
