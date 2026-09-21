@@ -310,6 +310,10 @@
   .c-btn:hover { background: var(--accent-soft); }
   .c-btn.primary { background: var(--accent-deep); color: #fff; }
   .c-btn.primary:hover { opacity: .88; background: var(--accent-deep); }
+  .c-alt { margin-top: 14px; }
+  .c-alt summary { cursor: pointer; font-size: 0.85rem; color: var(--accent-deep); font-weight: 600; margin-bottom: 10px; }
+  .c-alt.no-summary summary { display: none; }
+  .c-btn[disabled] { opacity: .6; cursor: default; }
   .c-note { font-size: 0.8rem; color: var(--sub); margin: 14px 0 0; }
   .c-status { font-size: 0.82rem; color: var(--accent-deep); min-height: 1.3em; margin: 8px 0 0; }
 
@@ -493,25 +497,36 @@
         <button type="button" class="topic" data-topic="other" aria-pressed="false">Something else</button>
       </fieldset>
 
-      <div class="composer" id="composer" hidden>
+      <form class="composer" id="composer" hidden>
         <p class="c-subject">Subject: <strong id="c-subject"></strong></p>
         <div class="c-row">
           <label for="c-name">Your name</label>
           <input id="c-name" type="text" autocomplete="name" placeholder="How should I address you?">
         </div>
+        <div class="c-row" id="c-email-row" hidden>
+          <label for="c-email">Your email</label>
+          <input id="c-email" type="email" autocomplete="email" placeholder="Where should I reply?">
+        </div>
         <div class="c-row">
           <label for="c-msg">Message</label>
           <textarea id="c-msg" placeholder=""></textarea>
         </div>
+        <input type="checkbox" id="c-bot" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
         <div class="c-actions">
-          <a class="c-btn primary" id="c-mailto" href="mailto:winn_g@outlook.com">Open in my email app</a>
-          <a class="c-btn" id="c-gmail" href="https://mail.google.com" target="_blank" rel="noopener">Gmail</a>
-          <a class="c-btn" id="c-outlook" href="https://outlook.live.com" target="_blank" rel="noopener">Outlook</a>
-          <button type="button" class="c-btn" id="c-copy">Copy message</button>
+          <button type="submit" class="c-btn primary" id="c-send" hidden>Send message</button>
         </div>
         <p class="c-status" id="c-status" role="status" aria-live="polite"></p>
-        <p class="c-note">Nothing is sent to this site. The message opens in your own email, so you can change it before you send. Mandarin or English both work.</p>
-      </div>
+        <details class="c-alt" id="c-alt">
+          <summary>Prefer to write from your own email?</summary>
+          <div class="c-actions">
+            <a class="c-btn primary" id="c-mailto" href="mailto:winn_g@outlook.com">Open in my email app</a>
+            <a class="c-btn" id="c-gmail" href="https://mail.google.com" target="_blank" rel="noopener">Gmail</a>
+            <a class="c-btn" id="c-outlook" href="https://outlook.live.com" target="_blank" rel="noopener">Outlook</a>
+            <button type="button" class="c-btn" id="c-copy">Copy message</button>
+          </div>
+        </details>
+        <p class="c-note" id="c-note"></p>
+      </form>
       <noscript><p class="c-note">Please write to me directly: <a href="mailto:winn_g@outlook.com">winn_g@outlook.com</a></p></noscript>
     </section>
 
@@ -527,6 +542,9 @@
 <script>
 (function () {
   var TO = "winn_g@outlook.com";
+  // Web3Forms public access key (it only acts as an alias for the inbox). If it is removed the form falls back to the email-app buttons.
+  var ACCESS_KEY = "47f1b414-e360-4eff-989d-ede665565a19";
+  var LIVE = ACCESS_KEY.indexOf("PASTE") !== 0;
   var TOPICS = {
     research:  { subject: "Research or collaboration", hint: "What are you working on, and how could we work together?" },
     mentoring: { subject: "Mentoring or hosting enquiry", hint: "Which scheme or institution, and what do you have in mind?" },
@@ -536,7 +554,15 @@
   var current = null;
   var $ = function (id) { return document.getElementById(id); };
   var buttons = document.querySelectorAll(".topic");
-  var composer = $("composer"), msg = $("c-msg"), nameEl = $("c-name"), status = $("c-status");
+  var form = $("composer"), msg = $("c-msg"), nameEl = $("c-name"), emailEl = $("c-email"), status = $("c-status"), sendBtn = $("c-send"), alt = $("c-alt");
+
+  if (LIVE) {
+    $("c-email-row").hidden = false; emailEl.required = true; msg.required = true; sendBtn.hidden = false;
+    $("c-note").textContent = "Your name, email and message reach my inbox through Web3Forms, a form service, and I use them only to reply. Mandarin or English both work.";
+  } else {
+    alt.open = true; alt.classList.add("no-summary");
+    $("c-note").textContent = "Nothing is sent to this site. The message opens in your own email, so you can change it before you send. Mandarin or English both work.";
+  }
 
   function body() {
     var text = "Hi Winn,\n\n" + msg.value.trim();
@@ -546,7 +572,7 @@
   }
   function refresh() {
     if (!current) return;
-    var t = TOPICS[current], b = body(), s = t.subject;
+    var s = TOPICS[current].subject, b = body();
     var q = "subject=" + encodeURIComponent(s) + "&body=" + encodeURIComponent(b);
     $("c-mailto").href  = "mailto:" + TO + "?" + q;
     $("c-gmail").href   = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(TO) + "&su=" + encodeURIComponent(s) + "&body=" + encodeURIComponent(b);
@@ -557,13 +583,46 @@
     buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.topic === key)); });
     $("c-subject").textContent = TOPICS[key].subject;
     msg.placeholder = TOPICS[key].hint;
-    composer.hidden = false;
+    form.hidden = false;
     status.textContent = "";
     refresh();
   }
   buttons.forEach(function (b) { b.addEventListener("click", function () { choose(b.dataset.topic); if (!msg.value) msg.focus({ preventScroll: true }); }); });
   msg.addEventListener("input", refresh);
   nameEl.addEventListener("input", refresh);
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!LIVE || !current) return;
+    if ($("c-bot").checked) { status.textContent = "Thanks. Your message is on its way."; return; }   // honeypot
+    if (!form.reportValidity()) return;
+    sendBtn.disabled = true; sendBtn.textContent = "Sending…"; status.textContent = "";
+    var name = nameEl.value.trim() || "Website visitor";
+    fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        access_key: ACCESS_KEY,
+        subject: "Website: " + TOPICS[current].subject,
+        from_name: "ge-xiaowen.github.io",
+        name: name,
+        email: emailEl.value.trim(),
+        replyto: emailEl.value.trim(),
+        message: msg.value.trim()
+      })
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (res.ok) {
+          status.textContent = "Thank you. Your message is sent, and I will reply to " + emailEl.value.trim() + ".";
+          msg.value = ""; refresh();
+        } else { throw new Error(res.j && res.j.message || "failed"); }
+      })
+      .catch(function () {
+        status.textContent = "That did not go through. Please use your own email instead: " + TO;
+        alt.open = true;
+      })
+      .then(function () { sendBtn.disabled = false; sendBtn.textContent = "Send message"; });
+  });
 
   $("c-copy").addEventListener("click", function () {
     var text = "To: " + TO + "\nSubject: " + TOPICS[current].subject + "\n\n" + body();
@@ -573,7 +632,7 @@
     } else {
       var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
       document.body.appendChild(ta); ta.select();
-      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      var ok = false; try { ok = document.execCommand("copy"); } catch (err) {}
       document.body.removeChild(ta); done(ok);
     }
   });
